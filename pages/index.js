@@ -1,7 +1,9 @@
+/* eslint-disable react/no-unescaped-entities */
 import { React, useState, useEffect } from "react";
 import { sendEmail } from "./emailjs";
-import FileImage from "./Fileimage";
 import axios from "axios";
+import Link from "next/link";
+
 
 const Form = () => {
   const [name, setName] = useState("");
@@ -14,12 +16,25 @@ const Form = () => {
   const [height, setheight] = useState("");
   const [film, setFilm] = useState("");
   const [physic, setPhysic] = useState("");
+  const [file1, setFile1] = useState("");
+  const [file2, setFile2] = useState("");
+  const [file3, setFile3] = useState("");
+  const [file4, setFile4] = useState("");
+  const [file5, setFile5] = useState("");
+  const [file6, setFile6] = useState("");
+  const [files, setFiles] = useState("");
 
+  const [eng, setEng] = useState("");
+  const [phone, setPhone] = useState("");
   const [whats, setWhats] = useState("");
   const [face, setFace] = useState("");
   const [ig, setIg] = useState("");
   const [twitter, setTwitter] = useState("");
   const [refer, setRefer] = useState("");
+  const [dateBirth, setDateBirth] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedFile, setSelectedFile] = useState();
 
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
@@ -81,37 +96,67 @@ const Form = () => {
     toggleButton();
   }
 
-  function checkPic1(event) {
-    setPic1(event.target.value);
+  const checkFile1 = (event) => {
+    setFile1(event.target.value);
+
+    // Pass file to sendEmail function
   }
 
-  function checkPic2(event) {
-    setPic2(event.target.value);
+  function checkFile2(event) {
+    setFile2(event.target.value);
   }
 
-  function checkPic3(event) {
-    setPic3(event.target.value);
+  function checkFile3(event) {
+    setFile3(event.target.value);
   }
 
-  function checkPic4(event) {
-    setPic4(event.target.value);
+  function checkFile4(event) {
+    setFile4(event.target.value);
   }
 
-  function checkPic5(event) {
-    setPic5(event.target.value);
-
+  function checkFile5(event) {
+    setFile5(event.target.value);
   }
 
-  function checkPic6(event) {
-    setPic6(event.target.value);
+  function checkFile6(event) {
+    setFile6(event.target.value);
   }
 
-  function validateImages() {
-    if (checkPic1() ) {
-      setShowButton(true);
-    }
-    else setShowButton(false);
+  function checkWhats(event) {
+    setWhats(event.target.value);
   }
+
+  function checkFile6(event) {
+    setFile6(event.target.value);
+  }
+
+  function checkFace(event) {
+    setFace(event.target.value);
+  }
+
+  function checkIg(event) {
+    setIg(event.target.value);
+  }
+
+  function checkTwitter(event) {
+    setTwitter(event.target.value);
+  }
+
+  function checkRefer(event) {
+    setRefer(event.target.value);
+  }
+
+  function checkEng(event) {
+    setEng(event.target.value);
+    toggleButton();
+  }
+
+  function checkPhone(event) {
+    setPhone(event.target.value);
+    toggleButton();
+  }
+
+  
 
   function checkPhone(event) {
     let phone = event.target.value;
@@ -140,30 +185,64 @@ const Form = () => {
   }
 
   function toggleButton(isValidPhone) {
-    if (name.length > 3 && validatePhone(number) && validateEmail(email) && validateImages(pic1) 
-    ) {
+    if (name.length > 3 && validatePhone(number) && validateEmail(email)) {
       setShowButton(true);
       console.log(setShowButton);
     } else {
       setShowButton(false);
     }
   }
-
+  const handleFileSelect = (event, index) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+  
+    reader.onload = () => {
+      setFiles(prevState => {
+        const newFiles = [...prevState];
+        newFiles[index] = { file, data: reader.result.split(',')[1] };
+        return newFiles;
+      });
+    };
+  
+    reader.readAsDataURL(file);
+  };
+  
   const submitForm = (event) => {
     event.preventDefault();
+    
     setSubmitAttempted(true);
     if (showButton) {
-      sendEmail(name, number, email, message);
+      sendEmail(
+        name,
+        artisticName,
+        email,
+        nacionality,
+        postalCode,
+        address,
+        airport,
+        weight,
+        height,
+        dateBirth,
+        eng,
+        gender,
+        film,
+        physic,
+        files,
+        number,
+        whats,
+        face,
+        ig,
+        twitter,
+        refer
+      );
       console.log("formulario enviado");
     }
   };
 
-   return (
+
+  return (
     <div className="form">
-      
-      <FileImage/>
-      
-{/*       <form onSubmit={submitForm}>
+      <form onSubmit={submitForm}>
         <h1 className="form__title-1">Become a Star</h1>
 
         <div className="form__card">
@@ -172,7 +251,7 @@ const Form = () => {
             type="text"
             value={name}
             onChange={checkName}
-            placeholder="Full Name / Nombre Completo"
+            placeholder="Robert Patterson"
             className="form__card__input"
           />
 
@@ -182,7 +261,7 @@ const Form = () => {
             type="text"
             value={artisticName}
             onChange={checkSecondName}
-            placeholder="Stage name / Nombre artístico"
+            placeholder="Jonhy jr."
             className="form__card__input"
           />
 
@@ -192,7 +271,7 @@ const Form = () => {
             type="text"
             value={email}
             onChange={checkEmail}
-            placeholder="Email / Correo Electronico"
+            placeholder="Luis@gmail.com"
             className="form__card__input"
           />
 
@@ -201,7 +280,7 @@ const Form = () => {
             type="text"
             value={nacionality}
             onChange={checkNacionality}
-            placeholder="Nacionality / Nacionalidad"
+            placeholder="Mexican / Mexicano"
             className="form__card__input"
           />
 
@@ -211,7 +290,7 @@ const Form = () => {
             type="text"
             value={postalCode}
             onChange={checkPostal}
-            placeholder="Postal Code"
+            placeholder="982030"
             className="form__card__input"
           />
 
@@ -221,7 +300,7 @@ const Form = () => {
             type="text"
             value={address}
             onChange={checkAdress}
-            placeholder="Address / Dirección "
+            placeholder="Street 5"
             className="form__card__input"
           />
 
@@ -234,7 +313,7 @@ const Form = () => {
             type="text"
             value={airport}
             onChange={checkAirport}
-            placeholder="Airport or Main Train station closest to you / Aeropuerto o estación de tren principal cerca de ti "
+            placeholder="Airport City"
             className="form__card__input"
           />
 
@@ -244,7 +323,7 @@ const Form = () => {
             type="text"
             value={weight}
             onChange={checkWeight}
-            placeholder="Weight (lb) / Peso (Kilos)"
+            placeholder="120lb/ 75kg"
             className="form__card__input"
           />
 
@@ -256,7 +335,7 @@ const Form = () => {
             type="text"
             value={height}
             onChange={checkHeight}
-            placeholder="Height (In ft) / Altura ( En cm) "
+            placeholder="180CM "
             className="form__card__input"
           />
 
@@ -266,15 +345,22 @@ const Form = () => {
 
           <input
             type="date"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            placeholder="Date of Birth / Fecha de Nacimiento"
+            value={dateBirth}
+            onChange={(e) => setDateBirth(e.target.value)}
             className="form__card__input"
           />
 
           <h3 className="form__card__title-3">
             English Level / Nivel de Inglés
           </h3>
+
+          <input
+            type="text"
+            value={eng}
+            onChange={checkEng}
+            placeholder="B2+ / Native "
+            className="form__card__input"
+          />
 
           <h3 className="form__card__title-3">
             Sexual Orientation / Orientación Sexual
@@ -316,7 +402,7 @@ const Form = () => {
             type="text"
             value={film}
             onChange={checkFilm}
-            placeholder="Please mention projects you are interested participating in / Favor de indicar en que proyectos le interesa participar actualmente. Ej: Gay, Bisexual or Heterosexual. "
+            placeholder="Bisexual "
             className="form__card__input"
           />
 
@@ -330,7 +416,7 @@ const Form = () => {
             type="text"
             value={physic}
             onChange={checkPhysic}
-            placeholder="Physical complexion. Ej: twink, slim, toned, average, muscular, stocky or chubby / Complexión Física. Ejemplo: esbelto, tonificado, promedio, musculoso, fornido"
+            placeholder="Toned / Esbelto"
             className="form__card__input"
           />
 
@@ -365,13 +451,86 @@ const Form = () => {
             <option value="value12">uncut</option>
           </select>
 
+          <h3 className="form__card__title-3">
+            Alternate photo of your face, if it has a different style or "look"
+            that you consider to look better than the first photo / Foto
+            alternada de su cara, si tiene un estilo diferente o "look" que
+            considere que se vea mejor que la primera foto.
+          </h3>
+
+          <input
+            type="file"
+            onChange={(e) => handleFileSelect(e, 0)}
+            className="form__card__input"
+          />
+
+          <h3 className="form__card__title-3">
+            Photo of your face, make sure the photo is CLOSE and CLEAR. (No
+            caps, no glasses, or other distractions) / Foto de su cara,
+            asegurarse de que las fotos sea CERCA y CLARA. (Sin gorras, lentes u
+            otras distracciones)
+          </h3>
+
+          <input
+            type="file"
+            onChange={(e) => handleFileSelect(e, 1)}
+            className="form__card__input"
+          />
+
+          <h3 className="form__card__title-3">
+            Clear photo of your torso (head to waist). The photo must be recent
+            and accurately represent your current appearance / Foto con claridad
+            de su torso (cabeza a cintura) sin interrupciones. La foto debe ser
+            reciente y representar exactamente su apariencia actual.
+          </h3>
+
+          <input
+            type="file"
+            onChange={(e) => handleFileSelect(e, 2)}
+            className="form__card__input"
+          />
+
+          <h3 className="form__card__title-3">
+            Front Full Body Photo (nude) / Foto de frente de cuerpo completo
+            (desnudo)
+          </h3>
+
+          <input
+            type="file"
+            onChange={(e) => handleFileSelect(e, 3)}
+            className="form__card__input"
+          />
+
+          <h3 className="form__card__title-3">
+            Side Full Body Photo (nude) / Foto de lado de cuerpo completo
+            (desnudo)
+          </h3>
+
+          <input
+            type="file"
+            onChange={(e) => handleFileSelect(e, 4)}
+            className="form__card__input"
+          />
+
+          <h3 className="form__card__title-3">
+            Any other photo that you think will help us evaluate you as a model
+            / Cualquier otra foto que considere que nos sea de ayuda a
+            evaluarlo(a) como modelo.
+          </h3>
+
+          <input
+            type="file"
+            onChange={(e) => handleFileSelect(e, 5)}
+            className="form__card__input"
+          />
+
           <h3 className="form__card__title-3">Phone</h3>
 
           <input
             type="text"
             value={number}
             onChange={checkPhone}
-            placeholder="Phone"
+            placeholder="9992350123"
             className="form__card__input"
           />
 
@@ -380,7 +539,8 @@ const Form = () => {
           <input
             type="text"
             value={whats}
-            placeholder="Whats"
+            onChange={checkWhats}
+            placeholder="9999345842"
             className="form__card__input"
           />
 
@@ -389,7 +549,8 @@ const Form = () => {
           <input
             type="text"
             value={face}
-            placeholder="Face"
+            onChange={checkFace}
+            placeholder="facebook.com/luis12345"
             className="form__card__input"
           />
 
@@ -398,7 +559,8 @@ const Form = () => {
           <input
             type="text"
             value={ig}
-            placeholder="Whats"
+            onChange={checkIg}
+            placeholder="instagram.com/luis12345"
             className="form__card__input"
           />
 
@@ -407,7 +569,8 @@ const Form = () => {
           <input
             type="text"
             value={twitter}
-            placeholder="twitter"
+            onChange={checkTwitter}
+            placeholder="@LuisVallarta"
             className="form__card__input"
           />
 
@@ -416,20 +579,11 @@ const Form = () => {
           <input
             type="text"
             value={refer}
-            placeholder="Refer"
+            onChange={checkRefer}
+            placeholder="Luis Gonzalez"
             className="form__card__input"
           />
 
-          <textarea
-            name=""
-            id=""
-            cols="30"
-            rows="10"
-            placeholder="Describe your proyect in details"
-            className="form__card__text-area"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          ></textarea>
           <div className="form__card__btn-container">
             <p className="form__card__btn-container__alert">
               {showButton
@@ -446,9 +600,9 @@ const Form = () => {
             </button>
           </div>
         </div>
-      </form> */}
+      </form>
     </div>
   );
-}; 
+};
 
 export default Form;
