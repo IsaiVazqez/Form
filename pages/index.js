@@ -4,7 +4,6 @@ import { sendEmail } from "./emailjs";
 import axios from "axios";
 import Link from "next/link";
 
-
 const Form = () => {
   const [name, setName] = useState("");
   const [artisticName, setrtisticName] = useState("");
@@ -207,6 +206,8 @@ const Form = () => {
     reader.readAsDataURL(file);
   };
   
+ 
+
   const submitForm = (event) => {
     event.preventDefault();
     
